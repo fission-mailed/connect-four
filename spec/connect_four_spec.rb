@@ -29,4 +29,18 @@ describe "Game" do
 		expect(obj.board[:b][0]).to eq(0)
 		
 	end
+	it "should reset the board when the reset method is called" do
+		obj.reset
+		expect(obj.board[:a][0]).to eq(0)
+		expect(obj.board[:a][3]).to eq(0)
+	end
+=begin	
+	it "should end the game when 4 tiles of the same colour are in a row" do
+		obj.turn(1,:d)
+		obj.turn(1,:e)
+		obj.turn(1,:c)
+		obj.turn(1,:f)
+		expect(obj.game_over?).to be true
+	end
+=end
 end

@@ -32,4 +32,15 @@ class Game
 		@turns += 1
 	end
 	
+	def reset
+		@board.each do |key,val|
+			@board[key] = [0,0,0,0,0,0]
+		end
+		@turns = 0
+	end
+	
+	def game_over?
+		true
+	end
+	
 end
