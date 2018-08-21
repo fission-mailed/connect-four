@@ -13,4 +13,20 @@ describe "Game" do
 		end
 		expect(board_size(obj)).to eq(42)
 	end
+	
+	it "should fill the 'cage' from the bottom up" do
+		obj.turn(1,:a)
+		obj.turn(1,:a)
+		obj.turn(2,:a)
+		obj.turn(1,:a)
+		obj.turn(2,:a)
+		obj.turn(1,:a)
+		expect(obj.board[:a][0]).to eq(1)
+		expect(obj.board[:a][1]).to eq(1)
+		expect(obj.board[:a][2]).to eq(-1)
+		expect(obj.board[:a][4]).to eq(-1)
+		expect(obj.turn(2,:a)).to be nil
+		expect(obj.board[:b][0]).to eq(0)
+		
+	end
 end
