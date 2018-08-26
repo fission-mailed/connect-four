@@ -1,7 +1,9 @@
 class Game
-	attr_accessor :board
+	attr_accessor :board, :width, :height
 	
-	def initialize
+	def initialize(width = 7, height = 6)
+		@width = width
+		@height = height
 		cols = [:a,:b,:c,:d,:e,:f,:g]
 		@board = Hash.new
 		cols.each do |col|
@@ -41,6 +43,104 @@ class Game
 	
 	def game_over?
 		true
+	end
+	
+	def get_ends(col,row)
+		# get left limit
+		left_end = [0, col - 3].max
+		west = [left_end, row]
+		
+		# get right limit
+		right_end = [col + 3, @width - 1].min
+		east = [right_end, row]
+		
+		# get top limit
+		top_end = [row + 3, @height - 1].min
+		north = [col, top_end]
+		
+		#get bottom limit
+		bottom_end = [0, row - 3].max
+		south = [col, bottom_end]
+		
+		# get top right limit
+		if col == right_end || row == top_end
+			top_right_col = col
+			top_right_row = row
+		else
+			next_col = col
+			next_row = row
+			# the top right limit can't exceed the right limit or the top limit
+			until next_col + 1 > right_end || next_row + 1 > top_end
+				next_col += 1
+				next_row += 1
+			end
+			top_right_col = next_col
+			top_right_row = next_row
+		end
+		north_east = [top_right_col, top_right_row]
+		
+		# get top left limit
+		if col == left_end || row == top_end
+			top_left_col = col
+			top_left_row = row
+		else
+			prev_col = col
+			next_row = row
+			until prev_col - 1 < left_end || next_row + 1 > top_end
+				prev_col -= 1
+				next_row += 1
+			end
+			top_left_col = prev_col
+			top_left_row = next_row
+		end
+		north_west = [top_left_col, top_left_row]
+		
+		# get bottom left limit
+		if col == left_end || row == bottom_end
+			bottom_left_col = col
+			bottom_left_row = row
+		else
+			prev_col = col
+			prev_row = row
+			until prev_col - 1 < left_end || prev_row - 1 < bottom_end
+				prev_col -= 1
+				prev_row -= 1
+			end
+			bottom_left_col = prev_col
+			bottom_left_row = prev_row
+		end
+		south_west = [bottom_left_col, bottom_left_row]
+		
+		# get bottom right limit
+		if col == right_end || row == bottom_end
+			bottom_right_col = col
+			bottom_right_row = row
+		else
+			next_col = col
+			prev_row = row
+			until next_col + 1 > right_end || prev_row - 1 < bottom_end
+				next_col += 1
+				prev_row -= 1
+			end
+			bottom_right_col = next_col
+			bottom_right_row = prev_row
+		end
+		south_east = [bottom_right_col, bottom_right_row]
+		
+		limits = [north, north_east, east, south_east, south, south_west, west, north_west]
+	end
+	
+	def score_space(col,row)
+		score = []
+		col_index = 0
+		cols = [:a,:b,:c,:d,:e,:f,:g]
+		cols.each_with_index do |item, index|
+			if col == item
+				col_index = index
+			end
+		end
+		limits = get_ends(col_index, row)
+		
 	end
 	
 end
