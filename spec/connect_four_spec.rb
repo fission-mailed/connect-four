@@ -42,8 +42,46 @@ describe "Game" do
 		limits = obj.get_ends(0,0)
 		expect(limits).to eq([[0,3],[3,3],[3,0],[0,0],[0,0],[0,0],[0,0],[0,0]])
 	end
+	
+	context "traverse should keep track of all 'related' cells" do
+		it "should check horizontal cells" do
+			horiz = obj.traverse([0,0],[3,0])
+			expect(horiz).to eq([[0,0],[1,0],[2,0],[3,0]])
+		end
+		it "should check vertical cells" do
+			vert = obj.traverse([5,2],[5,5])
+			expect(vert).to eq([[5,2],[5,3],[5,4],[5,5]])
+		end
+		it "should check sw->ne diagonal" do
+			diag = obj.traverse([2,3],[4,5])
+			expect(diag).to eq([[2,3],[3,4],[4,5]])
+		end
+		it "should check nw->se diagonal" do
+			diag = obj.traverse([4,3],[6,1])
+			expect(diag).to eq([[4,3],[5,2],[6,1]])
+		end
+		it "should work for corner cases" do
+			corner = obj.traverse([0,0],[0,0])
+			expect(corner).to eq([[0,0]])
+			corner = obj.traverse([0,5],[0,5])
+			expect(corner).to eq([[0,5]])
+			corner = obj.traverse([6,5],[6,5])
+			expect(corner).to eq([[6,5]])
+			corner = obj.traverse([6,0],[6,0])
+			expect(corner).to eq([[6,0]])
+		end
+	end
 
 =begin	
+	context "get_ends and traverse work together" do
+		it "should get horizontal cells" do
+			limits = obj.get_ends(2,2)
+			horiz = obj.traverse(limits[6],limits[2])
+			expect(horiz).to eq([[0,2],[1,2],[2,2],[3,2],[4,2],[5,2]])
+		end
+	end
+
+	
 	it "score_space method should return array of up to 13 scores" do
 		expect(obj.score_space(:d,3).size).to be <= 13
 	end

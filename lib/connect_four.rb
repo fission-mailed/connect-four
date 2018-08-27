@@ -41,10 +41,6 @@ class Game
 		@turns = 0
 	end
 	
-	def game_over?
-		true
-	end
-	
 	def get_ends(col,row)
 		# get left limit
 		left_end = [0, col - 3].max
@@ -130,6 +126,67 @@ class Game
 		limits = [north, north_east, east, south_east, south, south_west, west, north_west]
 	end
 	
+	def traverse(start, finish)
+		verts = []
+		horiz = []
+		diag_ne = []
+		diag_se = []
+		# corner cases
+		if start[0] == finish[0] && start[1] == finish[1]
+			if start == [0,0]
+				diag_se.push([0,0])
+				return diag_se
+			elsif start == [0, @height-1]
+				diag_ne.push([0, @height-1])
+				return diag_ne
+			elsif start == [@width-1, @height-1]
+				diag_se.push([@width-1, @height-1])
+				return diag_se
+			else
+				diag_ne.push([@width-1, 0])
+				return diag_ne
+			end
+		# cells on the same column
+		elsif start[0] == finish[0]
+			i = start[0]
+			j = start[1]
+			until j > finish[1]
+				verts.push([i,j])
+				j += 1
+			end
+			return verts
+		# cells on the same row
+		elsif start[1] == finish[1]
+			i = start[0]
+			j = start[1]
+			until i > finish[0]
+				horiz.push([i,j])
+				i += 1
+			end
+			return horiz
+		# cells along sw -> ne diagonal 
+		elsif start[0] < finish[0] && start[1] < finish[1]
+			i = start[0]
+			j = start[1]
+			until i > finish[0] || j > finish[1]
+				diag_ne.push([i,j])
+				i += 1
+				j += 1
+			end
+			return diag_ne
+		# cells along nw -> se diagonal
+		elsif start[0] < finish[0] && start[1] > finish[1]
+			i = start[0]
+			j = start[1]
+			until i > finish[0] || j < finish[1]
+				diag_se.push([i,j])
+				i += 1
+				j -= 1
+			end
+			return diag_se
+		end
+	end
+	
 	def score_space(col,row)
 		score = []
 		col_index = 0
@@ -141,6 +198,13 @@ class Game
 		end
 		limits = get_ends(col_index, row)
 		
+	end
+	
+	def game_over?
+		true
+	end
+	
+	def play
 	end
 	
 end
