@@ -72,16 +72,28 @@ describe "Game" do
 		end
 	end
 
-=begin	
+	
 	context "get_ends and traverse work together" do
+		limits = obj.get_ends(2,2)
+		horiz = obj.traverse(limits[6],limits[2])
+		vert = obj.traverse(limits[4],limits[0])
+		diag_ne = obj.traverse(limits[5],limits[1])
+		diag_se = obj.traverse(limits[7],limits[3])
 		it "should get horizontal cells" do
-			limits = obj.get_ends(2,2)
-			horiz = obj.traverse(limits[6],limits[2])
 			expect(horiz).to eq([[0,2],[1,2],[2,2],[3,2],[4,2],[5,2]])
+		end
+		it "should get vertical cells" do
+			expect(vert).to eq([[2,0],[2,1],[2,2],[2,3],[2,4],[2,5]])
+		end
+		it "should get sw->ne diagonal cells" do
+			expect(diag_ne).to eq([[0,0],[1,1],[2,2],[3,3],[4,4],[5,5]])
+		end
+		it "should get nw->se diagonal cells" do
+			expect(diag_se).to eq([[0,4],[1,3],[2,2],[3,1],[4,0]])
 		end
 	end
 
-	
+=begin	
 	it "score_space method should return array of up to 13 scores" do
 		expect(obj.score_space(:d,3).size).to be <= 13
 	end

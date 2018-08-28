@@ -4,9 +4,9 @@ class Game
 	def initialize(width = 7, height = 6)
 		@width = width
 		@height = height
-		cols = [:a,:b,:c,:d,:e,:f,:g]
+		@cols = [:a,:b,:c,:d,:e,:f,:g]
 		@board = Hash.new
-		cols.each do |col|
+		@cols.each do |col|
 			@board[col] = [0,0,0,0,0,0]
 		end
 		@turns = 0
@@ -190,14 +190,16 @@ class Game
 	def score_space(col,row)
 		score = []
 		col_index = 0
-		cols = [:a,:b,:c,:d,:e,:f,:g]
-		cols.each_with_index do |item, index|
+		@cols.each_with_index do |item, index|
 			if col == item
 				col_index = index
 			end
 		end
 		limits = get_ends(col_index, row)
-		
+		verts = traverse(limits[4],limits[0])
+		verts.each_with_index do |cell,index|
+			#unless verts.size - 
+		end
 	end
 	
 	def game_over?
