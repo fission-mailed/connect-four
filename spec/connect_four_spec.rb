@@ -14,6 +14,28 @@ describe "Game" do
 		expect(board_size(obj)).to eq(42)
 	end
 	
+	context "num_to_sym and sym_to_num methods" do
+		it "should convert numbered columns to symbol column names" do
+			expect(obj.num_to_sym(0)).to eq(:a)
+			expect(obj.num_to_sym(1)).to eq(:b)
+			expect(obj.num_to_sym(2)).to eq(:c)
+			expect(obj.num_to_sym(3)).to eq(:d)
+			expect(obj.num_to_sym(4)).to eq(:e)
+			expect(obj.num_to_sym(5)).to eq(:f)
+			expect(obj.num_to_sym(6)).to eq(:g)
+		end
+		it "should convert symbol column names to numbered columns" do
+			expect(obj.sym_to_num(:a)).to eq(0)
+			expect(obj.sym_to_num(:b)).to eq(1)
+			expect(obj.sym_to_num(:c)).to eq(2)
+			expect(obj.sym_to_num(:d)).to eq(3)
+			expect(obj.sym_to_num(:e)).to eq(4)
+			expect(obj.sym_to_num(:f)).to eq(5)
+			expect(obj.sym_to_num(:g)).to eq(6)
+			expect(obj.sym_to_num(:h)).to be nil
+		end
+	end
+	
 	it "should fill the 'cage' from the bottom up" do
 		obj.turn(1,:a)
 		obj.turn(1,:a)

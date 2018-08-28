@@ -12,6 +12,21 @@ class Game
 		@turns = 0
 	end
 	
+	def num_to_sym(num)
+		@cols[num]
+	end
+	
+	def sym_to_num(sym)
+		result = nil
+		@cols.each_with_index do |col,index|
+			if sym == col
+				result = index
+				break
+			end
+		end
+		result
+	end
+	
 	def turn(player,col)
 		if player == 1
 			val = 1
