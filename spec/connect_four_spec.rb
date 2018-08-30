@@ -114,13 +114,61 @@ describe "Game" do
 			expect(diag_se).to eq([[0,4],[1,3],[2,2],[3,1],[4,0]])
 		end
 	end
+	
+	context "get_cell_content" do
+		it "should get content of a cell from a numerical cell input" do
+			obj.reset
+			expect(obj.get_cell_content(3,0)).to eq(0)
+			obj.turn(1,:d)
+			expect(obj.get_cell_content(3,0)).to eq(1)
+			obj.turn(2,:a)
+			expect(obj.get_cell_content(0,0)).to eq(-1)
+		end
+	end
 
-=begin	
-	it "score_space method should return array of up to 13 scores" do
-		expect(obj.score_space(:d,3).size).to be <= 13
+
+	context "score_space method" do
+		it "should return array of up to 13 scores" do
+			obj.reset
+			expect(obj.score_space(3,3).size).to be <= 13
+		end
+		it "should produce an array of zeros at the start" do
+			expect(obj.score_space(3,3)).to eq([0,0,0,0,0,0,0,0,0,0,0,0,0])
+		end
+		it "should produce the correct score after several turns" do
+			obj.turn(1,:b)
+			obj.turn(2,:b)
+			obj.turn(1,:b)
+			obj.turn(2,:b)
+			expect(obj.score_space(1,2)).to eq([0,-1,0,1,1,1,1,1])
+		end
+		it "should produce correct scores when a win condition is met" do
+			obj.reset
+			obj.turn(1,:d)
+			obj.turn(2,:e)
+			obj.turn(1,:c)
+			obj.turn(2,:b)
+			obj.turn(1,:d)
+			obj.turn(2,:b)
+			obj.turn(1,:d)
+			obj.turn(2,:d)
+			obj.turn(1,:c)
+			obj.turn(2,:c)
+			obj.turn(1,:a)
+			obj.turn(2,:e)
+			obj.turn(1,:e)
+			obj.turn(2,:f)
+			obj.turn(1,:f)
+			obj.turn(2,:f)
+			obj.turn(1,:f)
+			expect(obj.score_space(3,1)).to eq([2,1,1,0,2,1,4,3,0,-1])
+			expect(obj.score_space(2,0)).to eq([1,2,0,0,4,nil])
+			expect(obj.score_space(6,0)).to eq([0,-1,nil,1])
+			expect(obj.score_space(3,3)).to eq([2,1,0,-1,-1,0,0,-2,-3,-2,0,1,1])
+		end
 	end
 	
-	
+=begin
 	it "should end the game when 4 tiles of the same colour are in a row" do
 		obj.turn(1,:d)
 		obj.turn(1,:e)

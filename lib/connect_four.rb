@@ -27,6 +27,29 @@ class Game
 		result
 	end
 	
+	def get_cell_content(col_num,row)
+		col = num_to_sym(col_num)
+		content = @board[col][row]
+	end
+	
+	def get_array_of_scores(arr)
+		scores = []
+		if arr.size >= 4
+			i = 0
+			while i < arr.size - 3
+				sum = 0
+				(i..i+3).each do |j|
+					sum += get_cell_content(arr[j][0],arr[j][1])
+				end
+				scores.push(sum)
+				i += 1
+			end
+		else
+			scores.push(nil)
+		end
+		scores
+	end
+	
 	def turn(player,col)
 		if player == 1
 			val = 1
@@ -56,31 +79,34 @@ class Game
 		@turns = 0
 	end
 	
-	def get_ends(col,row)
-		# get left limit
-		left_end = [0, col - 3].max
+	# when given a cell this method produces an array of all the cells
+	# that are 3 cells away (or fewer if the cell is near an edge) in
+	# the vertical, horizontal and both diagonal directions
+	def get_ends(col_num,row)
+		# get left end
+		left_end = [0, col_num - 3].max
 		west = [left_end, row]
 		
-		# get right limit
-		right_end = [col + 3, @width - 1].min
+		# get right end
+		right_end = [col_num + 3, @width - 1].min
 		east = [right_end, row]
 		
-		# get top limit
+		# get top end
 		top_end = [row + 3, @height - 1].min
-		north = [col, top_end]
+		north = [col_num, top_end]
 		
-		#get bottom limit
+		#get bottom end
 		bottom_end = [0, row - 3].max
-		south = [col, bottom_end]
+		south = [col_num, bottom_end]
 		
-		# get top right limit
-		if col == right_end || row == top_end
-			top_right_col = col
+		# get top-right end
+		if col_num == right_end || row == top_end
+			top_right_col = col_num
 			top_right_row = row
 		else
-			next_col = col
+			next_col = col_num
 			next_row = row
-			# the top right limit can't exceed the right limit or the top limit
+			# the top-right end can't exceed the right end or the top end
 			until next_col + 1 > right_end || next_row + 1 > top_end
 				next_col += 1
 				next_row += 1
@@ -90,12 +116,12 @@ class Game
 		end
 		north_east = [top_right_col, top_right_row]
 		
-		# get top left limit
-		if col == left_end || row == top_end
-			top_left_col = col
+		# get top-left end
+		if col_num == left_end || row == top_end
+			top_left_col = col_num
 			top_left_row = row
 		else
-			prev_col = col
+			prev_col = col_num
 			next_row = row
 			until prev_col - 1 < left_end || next_row + 1 > top_end
 				prev_col -= 1
@@ -106,12 +132,12 @@ class Game
 		end
 		north_west = [top_left_col, top_left_row]
 		
-		# get bottom left limit
-		if col == left_end || row == bottom_end
-			bottom_left_col = col
+		# get bottom-left end
+		if col_num == left_end || row == bottom_end
+			bottom_left_col = col_num
 			bottom_left_row = row
 		else
-			prev_col = col
+			prev_col = col_num
 			prev_row = row
 			until prev_col - 1 < left_end || prev_row - 1 < bottom_end
 				prev_col -= 1
@@ -122,12 +148,12 @@ class Game
 		end
 		south_west = [bottom_left_col, bottom_left_row]
 		
-		# get bottom right limit
-		if col == right_end || row == bottom_end
-			bottom_right_col = col
+		# get bottom-right end
+		if col_num == right_end || row == bottom_end
+			bottom_right_col = col_num
 			bottom_right_row = row
 		else
-			next_col = col
+			next_col = col_num
 			prev_row = row
 			until next_col + 1 > right_end || prev_row - 1 < bottom_end
 				next_col += 1
@@ -138,9 +164,14 @@ class Game
 		end
 		south_east = [bottom_right_col, bottom_right_row]
 		
-		limits = [north, north_east, east, south_east, south, south_west, west, north_west]
+		ends = [north, north_east, east, south_east, south, south_west, west, north_west]
 	end
 	
+	# when given a starting cell and an ending cell, this method
+	# returns an array of all the cells in between (inclusive) in a
+	# straight line including horizontally, vertically and both diagonally
+	# e.g. if given [0,0] and [0,3] would produce:
+	# [[0,0],[0,1],[0,2],[0,3]]
 	def traverse(start, finish)
 		verts = []
 		horiz = []
@@ -202,19 +233,29 @@ class Game
 		end
 	end
 	
-	def score_space(col,row)
-		score = []
-		col_index = 0
-		@cols.each_with_index do |item, index|
-			if col == item
-				col_index = index
-			end
-		end
-		limits = get_ends(col_index, row)
-		verts = traverse(limits[4],limits[0])
-		verts.each_with_index do |cell,index|
-			#unless verts.size - 
-		end
+	def score_space(col_num, row)
+		scores = []
+		ends = get_ends(col_num, row)
+		
+		# get all cells related to the current cell
+		vert_span = traverse(ends[4],ends[0])
+		horiz_span = traverse(ends[6],ends[2])
+		sw_to_ne_span = traverse(ends[5],ends[1])
+		nw_to_se_span = traverse(ends[7],ends[3])
+		
+		# get vertical scores
+		get_array_of_scores(vert_span).each {|score| scores.push(score)}
+		
+		# get horizontal scores
+		get_array_of_scores(horiz_span).each {|score| scores.push(score)}
+		
+		# get diagonal scores (sw->ne)
+		get_array_of_scores(sw_to_ne_span).each {|score| scores.push(score)}
+		
+		# get diagonal scores (nw->se)
+		get_array_of_scores(nw_to_se_span).each {|score| scores.push(score)}
+		
+		scores
 	end
 	
 	def game_over?
