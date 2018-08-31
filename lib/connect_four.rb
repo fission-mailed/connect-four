@@ -10,6 +10,7 @@ class Game
 			@board[col] = [0,0,0,0,0,0]
 		end
 		@turns = 0
+		@last_turn = nil
 	end
 	
 	def num_to_sym(num)
@@ -64,6 +65,7 @@ class Game
 			@board[col].each_with_index do |slot,index|
 				if slot == 0
 					@board[col][index] = val
+					@last_turn = [sym_to_num(col),index]
 					break
 				end
 			end
@@ -77,6 +79,7 @@ class Game
 			@board[key] = [0,0,0,0,0,0]
 		end
 		@turns = 0
+		@last_turn = nil
 	end
 	
 	# when given a cell this method produces an array of all the cells
@@ -258,11 +261,40 @@ class Game
 		scores
 	end
 	
+	# game is over when a player has connected 4 pieces or when the board if full.
 	def game_over?
-		true
+		if @last_turn == nil
+			false
+		else
+			if score_space(@last_turn[0],@last_turn[1]).include?(4) || score_space(@last_turn[0],@last_turn[1]).include?(-4) || @turns == (@height * @width)
+				true
+			else
+				false
+			end
+		end
 	end
-	
+=begin
+	# displays the current state of the game board to the command line
+	def display
+	end
+
 	def play
+		quit = false
+		until quit
+			col_num,row = 0
+			input = nil
+			
+			while input != "quit" || turns < 7 || game_over?(col_num,row)
+			end
+			
+			puts "Do you want to play again?"
+			answer = gets.chomp.downcase
+			if answer[0] == "y"
+				reset
+			else
+				quit = true
+			end
+		end
 	end
-	
+=end
 end

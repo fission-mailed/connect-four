@@ -168,13 +168,164 @@ describe "Game" do
 		end
 	end
 	
-=begin
-	it "should end the game when 4 tiles of the same colour are in a row" do
-		obj.turn(1,:d)
-		obj.turn(1,:e)
-		obj.turn(1,:c)
-		obj.turn(1,:f)
-		expect(obj.game_over?).to be true
+	context "game_over? method" do
+	
+		it "should end the game when 4 tiles of the same colour are in a row (horizontally)" do
+			obj.reset
+			obj.turn(1,:d)
+			obj.turn(1,:e)
+			obj.turn(1,:c)
+			obj.turn(1,:f)
+			expect(obj.game_over?).to be true
+		end
+		
+		it "should end the game for vertical connect four" do
+			obj.reset
+			obj.turn(1,:e)
+			obj.turn(2,:a)
+			obj.turn(1,:e)
+			obj.turn(2,:a)
+			obj.turn(1,:a)
+			obj.turn(2,:e)
+			obj.turn(1,:a)
+			obj.turn(2,:e)
+			obj.turn(1,:a)
+			obj.turn(2,:e)
+			expect(obj.game_over?).to be false
+			obj.turn(1,:a)
+			expect(obj.game_over?).to be true
+		end
+		
+		it "should end the game for diagonal (sw->ne) connect four" do
+			obj.reset
+			obj.turn(1,:d)
+			obj.turn(2,:d)
+			obj.turn(1,:d)
+			obj.turn(2,:e)
+			obj.turn(1,:e)
+			obj.turn(2,:e)
+			obj.turn(1,:e)
+			obj.turn(2,:f)
+			obj.turn(1,:f)
+			obj.turn(2,:f)
+			expect(obj.game_over?).to be false
+			obj.turn(1,:e)
+			obj.turn(2,:f)
+			obj.turn(1,:f)
+			obj.turn(2,:g)
+			obj.turn(1,:g)
+			obj.turn(2,:g)
+			expect(obj.game_over?).to be false
+			obj.turn(1,:g)
+			obj.turn(2,:g)
+			expect(obj.game_over?).to be true
+		end
+		
+		it "should end the game for diagonal (nw->se) connect four" do
+			obj.reset
+			obj.turn(1,:d)
+			obj.turn(2,:c)
+			obj.turn(1,:c)
+			obj.turn(2,:b)
+			obj.turn(1,:b)
+			obj.turn(2,:a)
+			obj.turn(1,:b)
+			obj.turn(2,:a)
+			obj.turn(1,:d)
+			expect(obj.game_over?).to be false
+			obj.turn(2,:a)
+			obj.turn(1,:a)
+			expect(obj.game_over?).to be true
+		end
+		
+		it "should end the game when the board is full (42 turns)" do
+			obj.reset
+			obj.turn(1,:a)
+			expect(obj.game_over?).to be false
+			obj.turn(2,:a)
+			expect(obj.game_over?).to be false
+			obj.turn(1,:a)
+			expect(obj.game_over?).to be false
+			obj.turn(2,:a)
+			expect(obj.game_over?).to be false
+			obj.turn(1,:a)
+			expect(obj.game_over?).to be false
+			obj.turn(2,:a)
+			expect(obj.game_over?).to be false
+			obj.turn(1,:b)
+			expect(obj.game_over?).to be false
+			obj.turn(2,:b)
+			expect(obj.game_over?).to be false
+			obj.turn(1,:b)
+			expect(obj.game_over?).to be false
+			obj.turn(2,:b)
+			expect(obj.game_over?).to be false
+			obj.turn(1,:b)
+			expect(obj.game_over?).to be false
+			obj.turn(2,:b)
+			expect(obj.game_over?).to be false
+			obj.turn(1,:c)
+			expect(obj.game_over?).to be false
+			obj.turn(2,:c)
+			expect(obj.game_over?).to be false
+			obj.turn(1,:c)
+			expect(obj.game_over?).to be false
+			obj.turn(2,:c)
+			expect(obj.game_over?).to be false
+			obj.turn(1,:c)
+			expect(obj.game_over?).to be false
+			obj.turn(2,:c)
+			expect(obj.game_over?).to be false
+			obj.turn(1,:e)
+			expect(obj.game_over?).to be false
+			obj.turn(2,:d)
+			expect(obj.game_over?).to be false
+			obj.turn(1,:d)
+			expect(obj.game_over?).to be false
+			obj.turn(2,:d)
+			expect(obj.game_over?).to be false
+			obj.turn(1,:d)
+			expect(obj.game_over?).to be false
+			obj.turn(2,:d)
+			expect(obj.game_over?).to be false
+			obj.turn(1,:d)
+			expect(obj.game_over?).to be false
+			obj.turn(2,:f)
+			expect(obj.game_over?).to be false
+			obj.turn(1,:e)
+			expect(obj.game_over?).to be false
+			obj.turn(2,:e)
+			expect(obj.game_over?).to be false
+			obj.turn(1,:e)
+			expect(obj.game_over?).to be false
+			obj.turn(2,:e)
+			expect(obj.game_over?).to be false
+			obj.turn(1,:e)
+			expect(obj.game_over?).to be false
+			obj.turn(2,:f)
+			expect(obj.game_over?).to be false
+			obj.turn(1,:f)
+			expect(obj.game_over?).to be false
+			obj.turn(2,:f)
+			expect(obj.game_over?).to be false
+			obj.turn(1,:f)
+			expect(obj.game_over?).to be false
+			obj.turn(2,:f)
+			expect(obj.game_over?).to be false
+			obj.turn(1,:g)
+			expect(obj.game_over?).to be false
+			obj.turn(2,:g)
+			expect(obj.game_over?).to be false
+			obj.turn(1,:g)
+			expect(obj.game_over?).to be false
+			obj.turn(2,:g)
+			expect(obj.game_over?).to be false
+			obj.turn(1,:g)
+			expect(obj.game_over?).to be false
+			expect(obj.game_over?).to be false
+			obj.turn(2,:g)
+			expect(obj.game_over?).to be true
+		end
 	end
-=end
+	
 end
