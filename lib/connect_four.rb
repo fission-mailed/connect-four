@@ -280,9 +280,19 @@ class Game
 		until quit
 			@exit = false
 			reset
-			# welcoming messages and instructions go here
+			puts
+			puts "Welcome to Connect 4"
+			puts
+			puts "The aim of the game is to connect 4 of your pieces in a line,"
+			puts "horizontally, vertically or diagonally, by dropping pieces into the grid."
+			puts
+			puts "Player 1, your pieces are red; Player 2, your pieces are blue."
+			puts
+			puts "Select the column you wish to drop your piece into by typing the letter A-G"
+			puts
+			puts "You can quit at any time by typing the word 'quit'"
 			while @turns < 7 || game_over? == false
-				#display
+				display
 				if @turns % 2 == 0
 					player = 1
 				else
@@ -312,6 +322,7 @@ class Game
 					break
 				end
 			end
+			display
 			if @turns.nil? == false
 				if @turns == 42
 					puts "It's a draw!"
@@ -332,7 +343,33 @@ class Game
 	
 	# displays the current state of the game board to the command line
 	def display
-		
+		puts
+		@cols .each do |header|
+			print "   #{header.to_s.upcase}  "
+		end
+		puts
+		(0..@height - 1).each do |row|
+			(0..@width - 1).each do |col|
+				print "|  #{token_colour(col,@height-row-1)}  "
+			end
+			puts "|"
+			print " "
+			(@width-1).times {print "-----+"}
+			puts "----- "
+		end
+		puts
+	end
+	
+	def token_colour(col_num, row)
+		case get_cell_content(col_num, row)
+		when 1
+			token = "O".red
+		when -1
+			token = "O".blue
+		else
+			token = " "
+		end
+		token
 	end
 	
 end
