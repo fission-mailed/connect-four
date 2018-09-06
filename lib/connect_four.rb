@@ -1,3 +1,5 @@
+require 'colorize'
+
 class Game
 	attr_accessor :board, :width, :height
 	
@@ -59,7 +61,6 @@ class Game
 		end
 		# if none of the slots in the column are 0, the column is full
 		if @board[col].none? {|slot| slot == 0}
-			puts "Column is full, choose a different column."
 			return nil
 		else
 			@board[col].each_with_index do |slot,index|
@@ -273,28 +274,67 @@ class Game
 			end
 		end
 	end
-=begin
-	# displays the current state of the game board to the command line
-	def display
-	end
-
+	
 	def play
 		quit = false
 		until quit
-			col_num,row = 0
-			input = nil
-			
-			while input != "quit" || turns < 7 || game_over?(col_num,row)
+			@exit = false
+			reset
+			# welcoming messages and instructions go here
+			while @turns < 7 || game_over? == false
+				#display
+				if @turns % 2 == 0
+					player = 1
+				else
+					player = 2
+				end
+				repeat = true
+				while repeat
+					repeat = false
+					puts "Player #{player} please select a column"
+					input = gets.chomp.downcase.to_sym
+					if input == :quit
+						puts "You have decided to quit."
+						@exit = true
+						break
+					end
+					if @cols.include?(input) == false
+						repeat = true
+						puts "That was an invalid column input"
+						puts "Please enter a b c d e f or g for column selection"
+					elsif turn(player, input) == nil
+						repeat = true
+						puts "Column is full, select a different column."
+					end
+				end
+				if @exit
+					@turns = nil
+					break
+				end
 			end
-			
+			if @turns.nil? == false
+				if @turns == 42
+					puts "It's a draw!"
+				elsif @turns % 2 != 0
+					puts "Player 1 wins!"
+				elsif @turns % 2 == 0
+					puts "Player 2 wins!"
+				end
+			end
+
 			puts "Do you want to play again?"
 			answer = gets.chomp.downcase
-			if answer[0] == "y"
-				reset
-			else
+			unless answer[0] == "y"
 				quit = true
 			end
 		end
 	end
-=end
+	
+	# displays the current state of the game board to the command line
+	def display
+		
+	end
+	
 end
+game = Game.new
+game.play
